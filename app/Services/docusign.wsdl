@@ -1,0 +1,65 @@
+<definitions name="math" xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             xmlns:math="http://example.org/math"
+             targetNamespace="http://example.org/math">
+
+    <types>
+        <xs:schema targetNamespace="http://example.org/math" elementFormDefault="qualified">
+
+            <xs:element name="add">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="x" type="xs:double"/>
+                        <xs:element name="y" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="answer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="result" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+        </xs:schema>
+    </types>
+
+    <message name="addMessage">
+        <part name="parameters" element="math:add"/>
+    </message>
+    <message name="resultMessage">
+        <part name="response" element="math:answer"/>
+    </message>
+
+    <portType name="WsMath">
+        <operation name="request">
+            <input message="math:addMessage"/>
+            <output message="math:resultMessage"/>
+        </operation>
+    </portType>
+
+    <binding name="MathSoapHttpBinding" type="math:WsMath">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="request">
+            <soap:operation soapAction="http://example.org/math/#sum"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="MathService">
+        <port name="MathEndpoint" binding="math:MathSoapHttpBinding">
+            <soap:address location="math"/>
+        </port>
+    </service>
+
+</definitions>
